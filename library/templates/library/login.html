@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center min-vh-100">
+    <div class="card shadow-lg p-4" style="width: 100%; max-width: 400px;">
+        <div class="text-center">
+            <h3 class="mb-3">Welcome Back</h3>
+            <p class="text-muted">Login to access your account</p>
+        </div>
+
+        <form method="POST" onsubmit="prepareLoginData()">
+            {% csrf_token %}
+
+           <!-- Role Selection -->
+            <div class="mb-3">
+                <label class="form-label"><i class="fas fa-user"></i> Login As</label>
+                <select id="role" name="role" class="form-control" onchange="toggleFields()"> <!-- Add name="role" -->
+                    <option value="student">Student</option>
+                    <option value="admin">Admin</option>
+                </select>
+            </div>
+
+            <!-- Registration Number (For Students) -->
+            <div class="mb-3" id="studentFields">
+                <label for="registration_number" class="form-label">
+                    <i class="fas fa-id-card"></i> Registration Number
+                </label>
+                <input type="text" class="form-control" id="registration_number" name="registration_number" placeholder="Enter your registration number">
+            </div>
+
+            <!-- Username (For Admins) -->
+            <div class="mb-3" id="adminFields" style="display: none;">
+                <label for="username" class="form-label">
+                    <i class="fas fa-user-shield"></i> Username
+                </label>
+                <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username">
+            </div>
+
+            <!-- Final username input (hidden, sent to server) -->
+            <input type="hidden" name="username" id="final_username">
+
+            <!-- Password -->
+            <div class="mb-3">
+                <label for="password" class="form-label">
+                    <i class="fas fa-lock"></i> Password
+                </label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+            </div>
+
+            <!-- Login Button -->
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary btn-lg">Login</button>
+            </div>
+
+            <!-- Additional Links -->
+            <div class="text-center mt-3">
+                <a href="{% url 'register' %}" class="text-decoration-none">Create an account</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- FontAwesome Icons -->
+<script src="https://kit.fontawesome.com/your-fontawesome-key.js" crossorigin="anonymous"></script>
+
+<!-- Toggle Fields for Role Selection -->
+<script>
+    function toggleFields() {
+        var role = document.getElementById("role").value;
+        document.getElementById("studentFields").style.display = (role === "student") ? "block" : "none";
+        document.getElementById("adminFields").style.display = (role === "admin") ? "block" : "none";
+    }
+
+    function prepareLoginData() {
+        var role = document.getElementById("role").value;
+        var finalUsername = document.getElementById("final_username");
+
+        if (role === "student") {
+            finalUsername.value = document.getElementById("registration_number").value;
+        } else {
+            finalUsername.value = document.getElementById("username").value;
+        }
+    }
+</script>
+{% endblock %}

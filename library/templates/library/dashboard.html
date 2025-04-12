@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<h2>Your Dashboard</h2>
+<p>Total Visits: {{ total_visits }}</p>
+<p>Visit Percentage: {{ visit_percentage }}%</p>
+<h3>Your Visit History</h3>
+<ul>
+    {% for visit in visits %}
+        <li>{{ visit.visit_time }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}

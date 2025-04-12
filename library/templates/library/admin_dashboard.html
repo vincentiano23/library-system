@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Admin Dashboard</h2>
+
+    <h3 class="mb-3">Student Visit Statistics</h3>
+
+    <!-- Search and Filter Section -->
+    <div class="mb-4">
+        <div class="row">
+            <div class="col-md-6">
+                <input type="text" class="form-control" id="searchInput" placeholder="Search by Registration Number" onkeyup="searchTable()">
+            </div>
+            <div class="col-md-6">
+                <button class="btn btn-primary float-end" onclick="sortTable()">Sort by Visits</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Table for Visit Statistics -->
+    <div class="table-responsive">
+        <table class="table table-striped" id="visitTable">
+            <thead>
+                <tr>
+                    <th>Registration Number</th>
+                    <th>Total Visits</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for visit in visits %}
+                    <tr>
+                        <td>{{ visit.student__registration_number }}</td>
+                        <td>{{ visit.total_visits }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="2" class="text-center">No visit data available.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- JavaScript for Table Search and Sorting -->
+<script>
+    // Search functionality for the table
+    function searchTable() {
+        let input = document.getElementById("searchInput");
+        let filter = input.value.toLowerCase();
+        let table = document.getElementById("visitTable");
+        let rows = table.getElementsByTagName("tr");
+
+        for (let i = 1; i < rows.length; i++) {
+            let cells = rows[i].getElementsByTagName("td");
+            let regNumberCell = cells[0];
+
+            if (regNumberCell) {
+                let txtValue = regNumberCell.textContent || regNumberCell.innerText;
+                if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                    rows[i].style.display = "";
+                } else {
+                    rows[i].style.display = "none";
+                }
+            }
+        }
+    }
+
+    // Sorting functionality for the table
+    function sortTable() {
+        let table = document.getElementById("visitTable");
+        let rows = Array.from(table.rows).slice(1); // Get all rows except header
+        let sortedRows = rows.sort((rowA, rowB) => {
+            let visitsA = parseInt(rowA.cells[1].textContent);
+            let visitsB = parseInt(rowB.cells[1].textContent);
+            return visitsB - visitsA; // Sort by visits descending
+        });
+
+        // Append sorted rows back to the table
+        sortedRows.forEach(row => table.appendChild(row));
+    }
+</script>
+
+{% endblock %}

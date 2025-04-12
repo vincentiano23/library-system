@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - University Library{% endblock %}
+
+{% block content %}
+    <div class="container text-center mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-lg p-4">
+                    {% if user.is_authenticated %}
+                        <h1 class="text-success">Welcome, {{ user.username }}!</h1>
+                        <p class="lead">You are signed in. Head over to your <a href="{% url 'dashboard' %}">dashboard</a>.</p>
+                        <a href="{% url 'logout' %}" class="btn btn-danger btn-lg mt-3">Logout</a>
+                    {% else %}
+                        <h1 class="text-primary">Welcome to the University Library</h1>
+                        <p class="lead">Enhance your learning experience by utilizing the library’s vast collection of resources.</p>
+                        <div class="d-grid gap-3 mt-4">
+                            <a href="{% url 'login' %}" class="btn btn-primary btn-lg">Login</a>
+                            <a href="{% url 'register' %}" class="btn btn-outline-success btn-lg">Register</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Additional Information Section -->
+    <div class="row mt-5">
+        <div class="col-md-4">
+            <div class="card text-center shadow p-3">
+                <h4 class="text-secondary">📚 Thousands of Books</h4>
+                <p>Access a diverse collection of books, research papers, and journals to support your studies.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center shadow p-3">
+                <h4 class="text-secondary">💻 Digital Resources</h4>
+                <p>Explore e-books, online courses, and research databases to enhance your learning.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center shadow p-3">
+                <h4 class="text-secondary">🏆 Track Your Library Visits</h4>
+                <p>Sign in when visiting the library and earn recognition for your engagement.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
