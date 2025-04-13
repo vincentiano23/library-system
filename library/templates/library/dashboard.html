@@ -1,15 +1,89 @@
 {% extends 'base.html' %}
 
-{% block title %}Dashboard{% endblock %}
+{% block title %}Student Dashboard{% endblock %}
 
 {% block content %}
-<h2>Your Dashboard</h2>
-<p>Total Visits: {{ total_visits }}</p>
-<p>Visit Percentage: {{ visit_percentage }}%</p>
-<h3>Your Visit History</h3>
-<ul>
-    {% for visit in visits %}
-        <li>{{ visit.visit_time }}</li>
-    {% endfor %}
-</ul>
+<div class="text-center mb-5">
+    <h2 class="fw-bold">Welcome, {{ request.user.student.full_name }} 👋</h2>
+    <p class="text-muted">Track your library activity below.</p>
+</div>
+<div class="container mt-5">
+    <div class="row text-center mb-4">
+        <div class="col-md-6 mb-3">
+            <div class="card border-primary shadow h-100">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-chart-line text-primary"></i> Total Visits</h5>
+                    <p class="display-5">{{ total_visits }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <div class="card border-success shadow h-100">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-percentage text-success"></i> Visit Percentage</h5>
+                    <p class="display-5">{{ visit_percentage }}%</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart Section -->
+    <div class="card shadow mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Visit Trends</h5>
+        </div>
+        <div class="card-body">
+            <canvas id="visitChart" height="100"></canvas>
+        </div>
+    </div>
+
+    <!-- Visit History -->
+    <div class="card shadow">
+        <div class="card-header">
+            <h5>Your Visit History</h5>
+        </div>
+        <ul class="list-group list-group-flush">
+            {% for visit in visits %}
+                <li class="list-group-item">
+                    <i class="fas fa-calendar-alt text-info"></i> {{ visit.visit_time|date:"F j, Y, g:i a" }}
+                </li>
+            {% empty %}
+                <li class="list-group-item text-muted">No visits recorded yet.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<!-- Chart.js Script -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('visitChart').getContext('2d');
+    const visitData = {
+        labels: [{% for visit in visits %}"{{ visit.visit_time|date:"M j" }}"{% if not forloop.last %}, {% endif %}{% endfor %}],
+        datasets: [{
+            label: 'Library Visits',
+            data: [{% for visit in visits %}1{% if not forloop.last %}, {% endif %}{% endfor %}],
+            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+            borderColor: '#36A2EB',
+            borderWidth: 2,
+            tension: 0.3,
+            fill: true
+        }]
+    };
+
+    new Chart(ctx, {
+        type: 'line',
+        data: visitData,
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    stepSize: 1,
+                    title: { display: true, text: 'Number of Visits' }
+                }
+            }
+        }
+    });
+</script>
 {% endblock %}
