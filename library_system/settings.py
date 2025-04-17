@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-5($$huea!rg5!rp=lrv&#v_7aip2#z7cnpok^g*dy)#-2638&-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["library-management-system-0brk.onrender.com"]
 
 
 # Application definition
